@@ -49,6 +49,13 @@ class PIDController:
         error_linear_old = self.error_linear
         self.error_linear = self.reference_value - actual_value
         self.error_integral = self.error_integral + self.error_linear*0.01
+
+        if self.error_integral * self.kp / self.Tn > self.anti_windup:
+            self.error_integral = self.anti_windup * self.Tn / self.kp
+        elif self.error_integral * self.kp / self.Tn < -self.anti_windup:
+            self.error_integral = -self.anti_windup * self.Tn / self.kp
+
+
         error_derivative = (self.error_linear - error_linear_old)/0.01 
 
         p_part = self.kp * self.error_linear
