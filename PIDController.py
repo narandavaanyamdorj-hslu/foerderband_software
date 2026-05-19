@@ -45,9 +45,16 @@ class PIDController:
         #     Sie können diese Werte in den Variablen p_part, i_part
         #     und d_part abspeichern oder die Berechnungen direkt in die
         #     Liste der pid_actions schreiben
-        p_part = 0
-        i_part = 0
-        d_part = 0
+
+        error_linear_old = self.error_linear
+        self.error_linear = self.reference_value - actual_value
+        self.error_integral = self.error_integral + self.error_linear*0.01
+        error_derivative = (self.error_linear - error_linear_old)/0.01 
+
+        p_part = self.kp * self.error_linear
+        #i_part = self.kp * (self.error_integral / self.Tn)
+        i_part = self.kp * (self.error_integral / self.Tn)
+        d_part = self.kp * (error_derivative * self.Tv)
         # TODO: Implementieren
 
         # Save the three parts of the controller in a vector
